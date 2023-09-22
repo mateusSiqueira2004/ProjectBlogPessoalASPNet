@@ -13,7 +13,7 @@ namespace BlogPessoal.Data
             modelBuilder.Entity<Postagem>().ToTable("tb_postagem");
         }
 
-        public DbSet<Postagem> Postagems { get; set; } = null;
+        public DbSet<Postagem> Postagens { get; set; } = null;
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
