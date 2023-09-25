@@ -10,15 +10,15 @@ namespace BlogPessoal.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Postagem>().ToTable("tb_postagem");
+            modelBuilder.Entity<Postagem>().ToTable("tb_postagens");
         }
 
-        public DbSet<Postagem> Postagens { get; set; } = null;
+        public DbSet<Postagem> Postagens { get; set; } = null!;
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var insertedEntries = this.ChangeTracker.Entries()
-                                    .Where(x => x.State == EntityState.Detached)
+                                    .Where(x => x.State == EntityState.Added)
                                     .Select(x => x.Entity);
             foreach(var insertedEntry in insertedEntries)
             {
@@ -38,6 +38,6 @@ namespace BlogPessoal.Data
                 }
             }
             return base.SaveChangesAsync(cancellationToken);
-        }
+        }   
     }
 }
