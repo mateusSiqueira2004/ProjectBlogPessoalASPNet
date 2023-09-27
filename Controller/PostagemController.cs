@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogPessoal.Controller
 {
-    [Route("/postagens")]
+    [Route("~/postagens")]
     [ApiController]
     public class PostagenController : ControllerBase
     {
@@ -44,8 +44,12 @@ namespace BlogPessoal.Controller
 
             if (!validarPostagem.IsValid)
                 return StatusCode(StatusCodes.Status400BadRequest, validarPostagem);
-            await _postagemService.Create(postagem);
 
+            var Resposta = await _postagemService.Create(postagem);
+
+            if (Resposta is null)
+                return BadRequest("Tema não encontrado");
+            
             return CreatedAtAction(nameof(GetById), new { id = postagem.Id }, postagem);
         }
         [HttpPut]
@@ -62,7 +66,7 @@ namespace BlogPessoal.Controller
             var Resposta = await _postagemService.Update(postagem);
 
             if (Resposta is null)
-                return NotFound("Postagem não encontrada!");
+                return NotFound("Postagem e/ou Tema não encontrada!");
             return Ok(Resposta);
         }
         [HttpDelete("{id}")]
