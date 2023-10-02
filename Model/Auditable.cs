@@ -6,6 +6,5 @@ namespace BlogPessoal.Model
     {
         public DateTimeOffset? Data { get; set; }
 
-      
     }
 }
