@@ -5,6 +5,8 @@ using BlogPessoal.Service;
 using BlogPessoal.Service.Implements;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using blogpessoal.Service.Implements;
+using blogpessoal.Service;
 
 namespace BlogPessoal
 {
@@ -36,14 +38,13 @@ namespace BlogPessoal
 
             // Validação das Entidades
             builder.Services.AddTransient<IValidator<Postagem>, PostagemValidator>();
+            builder.Services.AddTransient<IValidator<Tema>, TemaValidator>();
+            builder.Services.AddTransient<IValidator<User>, UserValidator>();
 
             // Registrar as Classes e Interfaces Service
             builder.Services.AddScoped<IPostagemService, PostagemService>();
-            // Validação das Entidades
-            builder.Services.AddTransient<IValidator<Tema>, TemaValidator>();
-
-            // Registrar as Classes e Interfaces Service
             builder.Services.AddScoped<ITemaService, TemaService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
