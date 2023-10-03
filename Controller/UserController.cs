@@ -1,5 +1,6 @@
 ﻿using blogpessoal.Service;
 using BlogPessoal.Model;
+using BlogPessoal.Security;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +15,17 @@ namespace blogpessoal.Controllers
 
         private readonly IUserService _userService;
         private readonly IValidator<User> _userValidator;
+        private readonly IAuthService _authService;
 
         public UserController(
             IUserService userService,
-            IValidator<User> userValidator
+            IValidator<User> userValidator,
+            IAuthService authService
             )
         {
             _userService = userService;
             _userValidator = userValidator;
+            _authService = authService;
 
         }
 
@@ -81,6 +85,16 @@ namespace blogpessoal.Controllers
             if (Resposta is null)
                 return NotFound("Usuário não encontrado!");
 
+            return Ok(Resposta);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("logar")]
+        public async Task<ActionResult> Autenticar([FromBody] UserLogin userLogin)
+        {
+            var Resposta = await _authService.Autenticar(userLogin);
+            if(Resposta is null)
+                return Unauthorized("Usuario e/ou Senha inválidos");
             return Ok(Resposta);
         }
 
