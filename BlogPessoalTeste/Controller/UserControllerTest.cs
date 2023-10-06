@@ -106,5 +106,56 @@ namespace BlogPessoalTeste.Controller
             var resposta = await _client.GetAsync("/usuarios/all");
             resposta.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+
+        [Fact, Order(5)]
+        public async Task DeveListarUmUsuario()
+        {
+            var novoUsuario = new Dictionary<string, string>
+            {
+                { "nome", "Paulo Antunes" },
+                { "usuario", "paulo@email.com.br" },
+                { "senha", "12345678" },
+                { "foto", "-" }
+            };
+            var usuarioJson = JsonConvert.SerializeObject(novoUsuario);
+            var corpoRequisicaoPost = new StringContent(usuarioJson, Encoding.UTF8, "application/json");
+            var respostaPost = await _client.PostAsync("/usuarios/cadastrar", corpoRequisicaoPost);
+            respostaPost.EnsureSuccessStatusCode();
+            _client.SetFakeBearerToken((object)token);
+            var corpoRespostaPost = await respostaPost.Content.ReadFromJsonAsync<User>();
+            var idUsuarioCriado = corpoRespostaPost.Id.ToString();
+            var respostaGet = await _client.GetAsync($"/usuarios/{idUsuarioCriado}");
+            respostaGet.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        }
+
+        [Fact, Order(6)]
+        public async Task DeveAutenticarUmUsuario()
+        {
+            var novoUsuario = new Dictionary<string, string>
+            {
+                { "nome", "Paulo Antunes" },
+                { "usuario", "paulo@email.com.br" },
+                { "senha", "12345678" },
+                { "foto", "-" }
+            };
+            var usuarioJson = JsonConvert.SerializeObject(novoUsuario);
+            var corpoRequisicaoPost = new StringContent(usuarioJson, Encoding.UTF8, "application/json");
+            var respostaPost = await _client.PostAsync("/usuarios/cadastrar", corpoRequisicaoPost);
+            respostaPost.EnsureSuccessStatusCode();
+
+            var usuario = new Dictionary<string, string>
+            {
+                {"usuario", "paulo@email.com.br"},
+                {"senha", "12345678" }
+            };
+
+            var autenticaJson = JsonConvert.SerializeObject(usuario);
+            var corpoRequisicao = new StringContent(autenticaJson, Encoding.UTF8, "application/Json");
+
+            var resposta = await _client.PostAsync("/usuarios/logar", corpoRequisicao);
+            resposta.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        }
     }
 }
