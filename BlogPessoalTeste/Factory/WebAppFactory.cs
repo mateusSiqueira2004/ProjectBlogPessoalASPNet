@@ -45,7 +45,7 @@ namespace BlogPessoalTeste.Factory
             builder.UseTestServer().ConfigureTestServices(collection =>{
                 collection.AddAuthentication(options =>{
                     options.DefaultAuthenticateScheme = FakeJwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = FakeJwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme    = FakeJwtBearerDefaults.AuthenticationScheme;
                 }).AddFakeJwtBearer();
             });
             base.ConfigureWebHost(builder);

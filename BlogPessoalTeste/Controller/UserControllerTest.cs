@@ -110,7 +110,7 @@ namespace BlogPessoalTeste.Controller
         [Fact, Order(5)]
         public async Task DeveListarUmUsuario()
         {
-            var novoUsuario = new Dictionary<string, string>
+            var novoUsuario = new Dictionary<string, string>()
             {
                 { "nome", "Paulo Antunes" },
                 { "usuario", "paulo@email.com.br" },
@@ -121,10 +121,13 @@ namespace BlogPessoalTeste.Controller
             var corpoRequisicaoPost = new StringContent(usuarioJson, Encoding.UTF8, "application/json");
             var respostaPost = await _client.PostAsync("/usuarios/cadastrar", corpoRequisicaoPost);
             respostaPost.EnsureSuccessStatusCode();
+
             _client.SetFakeBearerToken((object)token);
             var corpoRespostaPost = await respostaPost.Content.ReadFromJsonAsync<User>();
             var idUsuarioCriado = corpoRespostaPost.Id.ToString();
+
             var respostaGet = await _client.GetAsync($"/usuarios/{idUsuarioCriado}");
+
             respostaGet.StatusCode.Should().Be(HttpStatusCode.OK);
 
         }
@@ -132,10 +135,10 @@ namespace BlogPessoalTeste.Controller
         [Fact, Order(6)]
         public async Task DeveAutenticarUmUsuario()
         {
-            var novoUsuario = new Dictionary<string, string>
+            var novoUsuario = new Dictionary<string, string>()
             {
-                { "nome", "Paulo Antunes" },
-                { "usuario", "paulo@email.com.br" },
+                { "nome", "Carlos Antunes" },
+                { "usuario", "Carlos@email.com.br" },
                 { "senha", "12345678" },
                 { "foto", "-" }
             };
@@ -146,7 +149,7 @@ namespace BlogPessoalTeste.Controller
 
             var usuario = new Dictionary<string, string>
             {
-                {"usuario", "paulo@email.com.br"},
+                {"usuario", "Carlos@email.com.br"},
                 {"senha", "12345678" }
             };
 
