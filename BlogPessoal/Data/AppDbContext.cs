@@ -33,7 +33,8 @@ namespace BlogPessoal.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var currentTime = DateTimeOffset.Now;
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            var currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.Now, timeZoneInfo); 
             var insertedEntries = this.ChangeTracker.Entries()
                                     .Where(x => x.State == EntityState.Added)
                                     .Select(x => x.Entity);
