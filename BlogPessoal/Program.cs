@@ -56,7 +56,6 @@ namespace BlogPessoal
             else
             {
                 /* Conexão Local - SQL Server */
-
                 var connectionString = builder.Configuration.
                     GetConnectionString("DefaultConnection");
 

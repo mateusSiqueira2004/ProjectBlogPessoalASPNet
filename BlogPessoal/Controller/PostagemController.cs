@@ -40,7 +40,7 @@ namespace BlogPessoal.Controller
         {
             return Ok(await _postagemService.GetByTitulo(titulo));
         }
-        [HttpPost]
+        [HttpPost("cadastrar")]
         public async Task<ActionResult> Create([FromBody] Postagem postagem) {
             var validarPostagem = await _postagemValidator.ValidateAsync(postagem);
 
