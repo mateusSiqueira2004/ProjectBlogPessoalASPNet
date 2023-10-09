@@ -34,7 +34,8 @@ namespace BlogPessoal.Data
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-            var currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.Now, timeZoneInfo); 
+            var currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.Now, timeZoneInfo);
+            var currentTimeUtc = currentTime.ToUniversalTime();
             var insertedEntries = this.ChangeTracker.Entries()
                                     .Where(x => x.State == EntityState.Added)
                                     .Select(x => x.Entity);
@@ -42,7 +43,7 @@ namespace BlogPessoal.Data
             {
                 if (insertedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data = currentTime;
+                    auditableEntity.Data = currentTimeUtc;
                 }
             }
             var modifiedEntries = ChangeTracker.Entries()
@@ -52,7 +53,7 @@ namespace BlogPessoal.Data
             {
                 if (modifiedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data = currentTime;
+                    auditableEntity.Data = currentTimeUtc;
                 }
             }
             return base.SaveChangesAsync(cancellationToken);
