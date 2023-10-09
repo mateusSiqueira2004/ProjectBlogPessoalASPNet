@@ -33,27 +33,29 @@ namespace BlogPessoal.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            var currentTime = DateTimeOffset.Now;
             var insertedEntries = this.ChangeTracker.Entries()
                                     .Where(x => x.State == EntityState.Added)
                                     .Select(x => x.Entity);
-            foreach(var insertedEntry in insertedEntries)
+            foreach (var insertedEntry in insertedEntries)
             {
                 if (insertedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data = new DateTimeOffset(DateTime.Now, new TimeSpan(-3, 0, 0));
+                    auditableEntity.Data = currentTime;
                 }
             }
             var modifiedEntries = ChangeTracker.Entries()
                                     .Where(x => x.State == EntityState.Modified)
                                     .Select(x => x.Entity);
-            foreach(var modifiedEntry in modifiedEntries) 
+            foreach (var modifiedEntry in modifiedEntries)
             {
-                if (modifiedEntry is Auditable auditableEntity) 
+                if (modifiedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data = new DateTimeOffset(DateTime.Now, new TimeSpan(-3, 0, 0));
+                    auditableEntity.Data = currentTime;
                 }
             }
             return base.SaveChangesAsync(cancellationToken);
-        }   
+        }
+
     }
 }
