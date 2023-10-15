@@ -33,31 +33,33 @@ namespace BlogPessoal.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-            var currentTime = TimeZoneInfo.ConvertTime(DateTimeOffset.Now, timeZoneInfo);
-            var currentTimeUtc = currentTime.ToUniversalTime();
             var insertedEntries = this.ChangeTracker.Entries()
-                                    .Where(x => x.State == EntityState.Added)
-                                    .Select(x => x.Entity);
+                                   .Where(x => x.State == EntityState.Added)
+                                   .Select(x => x.Entity);
+
             foreach (var insertedEntry in insertedEntries)
             {
+                //Se uma propriedade da Classe Auditable estiver sendo criada. 
                 if (insertedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data = currentTimeUtc;
+                    auditableEntity.Data = new DateTimeOffset(DateTime.Now, new TimeSpan(-3, 0, 0));
                 }
             }
+
             var modifiedEntries = ChangeTracker.Entries()
-                                    .Where(x => x.State == EntityState.Modified)
-                                    .Select(x => x.Entity);
+                       .Where(x => x.State == EntityState.Modified)
+                       .Select(x => x.Entity);
+
             foreach (var modifiedEntry in modifiedEntries)
             {
+                //Se uma propriedade da Classe Auditable estiver sendo atualizada.  
                 if (modifiedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data = currentTimeUtc;
+                    auditableEntity.Data = new DateTimeOffset(DateTime.Now, new TimeSpan(-3, 0, 0));
                 }
             }
+
             return base.SaveChangesAsync(cancellationToken);
         }
-
     }
 }
